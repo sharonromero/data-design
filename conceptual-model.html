@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<title>Conceptual Model</title>
+	</head>
+	<body>
+		<h2>Entities & Attributes</h2>
+
+		<ul>
+			<li>bird</li>
+			<li>birdId (primary key)</li>
+			<li>birdName</li>
+			<li>birdColor</li>
+			<li>birdSize</li>
+			<li>birdImage</li>
+			<li>birdVideo</li>
+			<li>birdRange</li>
+		</ul>
+
+		<ul>
+			<li>sound</li>
+			<li>soundId (primary key)</li>
+			<li>soundBirdId (foreign key)</li>
+		</ul>
+
+		<ul>
+			<li>article</li>
+			<li>articleId (primary key)</li>
+			<li>articleBirdId (foreign key)</li>
+			<li>articleBirdImageId (foreign key)</li>
+			<li>articleSoundBirdId (foreign key)</li>
+			<li>articleContent</li>
+		</ul>
+
+		<p><a href="index.html">Home</a></p>
+
+	</body>
+</html>
