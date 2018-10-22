@@ -1,7 +1,7 @@
 <?php
-//namespace /sromero130/public_html/data-design/php/Classes/Article.php;
+namespace sromero130\DataDesign;
 
-//require_once(Classes(__autoload.php__ ) . "/Classes/autoload.php");
+require_once(dirname(__DIR__, 2) . "/Classes/autoload.php");
 
 use Ramsey\Uuid\Uuid;
 
@@ -24,18 +24,19 @@ class Bird {
 	{
 		$this->setArticleId($newArticleId);
 		$this->setArticleBirdId($newArticleBirdId);
-		$this->setArticleSoundBirdId($newArticleBirdId);
+		$this->setArticleSoundBirdId($newArticleSoundBirdId);
 		$this->setArticleContent($newArticleContent);
 		$this->setArticleBirdImage($newArticleBirdImage);
 		}
 	}
 
-$bird1 = new Bird();
-$bird1->articleId =
-$bird1->articleBirdId =
-$bird1->articleSoundBirdId =
-$bird1->articleContent = "Behavior";
-$bird1->articleBirdImage =
+$bird_one = new Bird();
+
+$bird1->ArticleId = "Uuid";
+$bird1->ArticleBirdId = "Uuid";
+$bird1->ArticleSoundBirdId = "Uuid";
+$bird1->ArticleContent = "Behavior";
+$bird1->ArticleBirdImage = "Adult Male"
 
 	/**
 	 * mutator method for article id
