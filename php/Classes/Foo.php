@@ -7,9 +7,6 @@ class Bird {
 	private $size;
 	private $gender;
 
-	public function __construct($newSpecies, $newColor, $newSize, $newGender) {
-	}
-
 	public function setName($value) {
 		$this->species = $value;
 	}
@@ -41,12 +38,16 @@ class Bird {
 	public function getGender() {
 		return $this->gender;
 	}
-}
+
+	public function __construct($newSpecies, $newColor, $newSize, $newGender) {
+	}
 
 $bird1 = new Bird;
 $bird1->species = "House Finch";
 $bird1->color = "Red";
 $bird1->size = "Sparrow-sized or smaller";
 $bird1->gender = "male";
+
+}
 
 ?>
