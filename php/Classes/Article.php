@@ -47,17 +47,16 @@ class Bird {
 	 * @param string $newArticleBirdImage string containing the name or url of the image of the bird discussed in the article
 	 **/
 	public function __construct($newArticleId, $newArticleBirdId, $newArticleSoundBirdId, string $newArticleContent, string $newArticleBirdImage) {
-	try {
-		$this->setArticleId($newArticleId);
-		$this->setArticleBirdId($newArticleBirdId);
-		$this->setArticleSoundBirdId($newArticleSoundBirdId);
-		$this->setArticleContent($newArticleContent);
-		$this->setArticleBirdImage($newArticleBirdImage);
-		}
-		//determine what exception was thrown
-	catch(\InvalidArgumentException | \RangeException | \Exception | \TypeError $exception) {
-		$exceptionType = get_class($exception);
-		throw(new $exceptionType($exception->getMessage(), 0, $exception));
+		try {
+			$this->setArticleId($newArticleId);
+			$this->setArticleBirdId($newArticleBirdId);
+			$this->setArticleSoundBirdId($newArticleSoundBirdId);
+			$this->setArticleContent($newArticleContent);
+			$this->setArticleBirdImage($newArticleBirdImage);
+		} //determine what exception was thrown
+		catch(\InvalidArgumentException | \RangeException | \Exception | \TypeError $exception) {
+			$exceptionType = get_class($exception);
+			throw(new $exceptionType($exception->getMessage(), 0, $exception));
 		}
 	}
 
@@ -66,7 +65,7 @@ class Bird {
 	 *
 	 * @return Uuid value for articleId
 	 **/
-	public function getArticleId() : Uuid {
+	public function getArticleId(): Uuid {
 		return ($this->articleId);
 
 		//this outside of class
@@ -79,28 +78,25 @@ class Bird {
 	 * @throws \RangeException if $newArticleId is not positive
 	 * @throws \TypeError if $newArticleId is not a uuid
 	 **/
-	public function setArticleId( $newArticleId) : void {
+	public function setArticleId($newArticleId): void {
 		try {
 			$uuid = self::validateUuid($newArticleId);
-		}catch(\InvalidArgumentException | \RangeException | \Exception | \TypeError $exception) {
+		} catch(\InvalidArgumentException | \RangeException | \Exception | \TypeError $exception) {
 		}
 
 		//convert and store the article id
 		$this->articleId = $uuid;
-
-
-			}
-
 	}
 
-/**
- * accessor method for article bird id
- *
- * @return uuid value for article bird id
- **/
-public function getArticleBirdId() : uuid{
-	return ($this->articleBirdId);
-}
+
+	/**
+	 * accessor method for article bird id
+	 *
+	 * @return uuid value for article bird id
+	 **/
+	public function getArticleBirdId(): uuid {
+		return ($this->articleBirdId);
+	}
 
 	/**
 	 * mutator method for article bird id
@@ -109,10 +105,11 @@ public function getArticleBirdId() : uuid{
 	 * @throws \RangeException if $newArticleBirdId is not positive
 	 * @throws \TypeError if $newArticleBirdId is not an integer
 	 **/
-	public function setArticleBirdId( $newArticleBirdId) : void {
+	public function setArticleBirdId($newArticleBirdId): void {
 		try {
-				$uuid = self::validateUuid($newArticleBirdId);
-			catch(\InvalidArgumentException | \RangeException | \Exception | \TypeError $exception) {
+			$uuid = self::validateUuid($newArticleBirdId);
+		catch
+			(\InvalidArgumentException | \RangeException | \Exception | \TypeError $exception) {
 				$exceptionType = get_class($exception);
 				throw(new $exceptionType($exception->getMessage(), 0, $exception));
 			}
@@ -126,9 +123,9 @@ public function getArticleBirdId() : uuid{
 	 *
 	 * @return uuid value for article sound bird id
 	 **/
-	public function getArticleSoundBirdId() : uuid{
-		return ($this->articleSoundBirdId);
-	}
+	public function getArticleSoundBirdId(): uuid {
+			return ($this->articleSoundBirdId);
+		}
 
 
 	/**
@@ -138,13 +135,14 @@ public function getArticleBirdId() : uuid{
 	 * @throws \RangeException if $newArticleSoundBirdId is not positive
 	 * @throws \TypeError if $newArticleSoundBirdId is not an integer
 	 **/
-	public function setArticleSoundBirdId( $newArticleSoundBirdId) : void {
-		try {
+	public function setArticleSoundBirdId($newArticleSoundBirdId): void {
+			try {
 				$uuid = self::validateUuid($newArticleSoundBirdId);
-			catch(\InvalidArgumentException | \RangeException | \Exception | \TypeError $exception) {
-				$exceptionType = get_class($exception);
-				throw(new $exceptionType($exception->getMessage(), 0, $exception));
-			}
+			catch
+				(\InvalidArgumentException | \RangeException | \Exception | \TypeError $exception) {
+					$exceptionType = get_class($exception);
+					throw(new $exceptionType($exception->getMessage(), 0, $exception));
+				}
 		}
 
 		// convert and store the profile id
@@ -156,9 +154,9 @@ public function getArticleBirdId() : uuid{
 	 *
 	 * @return string value of article content
 	 **/
-	public function getArticleContent() : string {
-		return ($this->articleContent);
-	}
+	public function getArticleContent(): string {
+			return ($this->articleContent);
+		}
 
 	/**
 	 * mutator method for article content
@@ -168,39 +166,55 @@ public function getArticleBirdId() : uuid{
 	 * @throws \RangeException if $newArticleContent is > 100 characters
 	 * @throws \TypeError if $newArticleContent is not a string
 	 **/
-	public function setArticleContent(string $newArticleContent) : void {
-		//verify the tweet content is secure
-		$newArticleContent = trim($newArticleContent);
-		$newArticleContent = filter_var($newArticleContent, FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
-		if(empty($newArticleContent) === true) {
-			throw(new \InvalidArgumentException("article content is empty or insecure"));
+	public function setArticleContent(string $newArticleContent): void {
+			//verify the tweet content is secure
+			$newArticleContent = trim($newArticleContent);
+			$newArticleContent = filter_var($newArticleContent, FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
+			if(empty($newArticleContent) === true) {
+				throw(new \InvalidArgumentException("article content is empty or insecure"));
+			}
+
+			//verify the article content will fit in the database
+			if(strlen($newArticleContent) >= 100) {
+				throw(new \RangeException("article content too large"));
+			}
+
+			// store the article content
+			$this->articleContent = $newArticleContent;
 		}
 
-		//verify the article content will fit in the database
-		if(strlen($newArticleContent) >=100) {
-			throw(new \RangeException("article content too large"));
+/**
+ * accessor method for article bird image
+ *
+ * @return string value of article bird image
+ **/
+	public function getArticleBirdImage(): string {
+			return ($this->articleBirdImage);
 		}
-
-		$this->articleContent = $articleContent;
-	}
-
-
 
 	/**
-	 * @param $articleBirdImage
 	 * mutator method for article bird image
+	 *
+	 * @param string $newArticleBirdImage new value of bird image
+	 * @throws \InvalidArgumentException if $newArticleBirdImage is not a string or insecure
+	 * @throws \RangeException if $newArticleBirdImage is > 255 characters
+	 * @throws \TypeError if $newArticleBirdImage is not a string
 	 **/
-	public function setArticleBirdImage($articleBirdImage) {
-		$this->articleBirdImage = $articleBirdImage;
+	public function setArticleBirdImage(string $articleBirdImage): void {
+			// verify the article bird image is secure
+			$newArticleBirdImage = trim($newArticleBirdImage);
+			$newArticleBirdImage = filter_var(($newArticleBirdImage, FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES));
+		if(empty($newArticleBirdImage) === true) {
+			throw(new \InvalidArgumentException("article bird image is empty or insecure"));
+		}
+
+		// store the article bird image
+		$this->articleBirdImage = $newArticleBirdImage;
 	}
 
-	/**
-	 * @return mixed
-	 * accessor method for article bird image
-	 **/
-	public function getArticleBirdImage() {
-		return ($this->articleBirdImage);
-	}
+
+
+}
 
 }
 
