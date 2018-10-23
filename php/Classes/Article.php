@@ -122,36 +122,69 @@ public function getArticleBirdId() : uuid{
 	}
 
 	/**
-	 * @param $articleSoundBirdId
-	 * mutator method for article sound bird id
-	 **/
-	public function setArticleSoundBirdId($articleSoundBirdId) {
-		$this->articleSoundBirdId = $articleSoundBirdId;
-	}
-
-	/**
-	 * @return mixed
 	 * accessor method for article sound bird id
+	 *
+	 * @return uuid value for article sound bird id
 	 **/
-	public function getArticleSoundBirdId() {
+	public function getArticleSoundBirdId() : uuid{
 		return ($this->articleSoundBirdId);
 	}
 
+
 	/**
-	 * @param $articleContent
-	 * mutator method for article content
+	 * mutator method for article sound bird id
+	 *
+	 * @param string | Uuid $newArticleSoundBirdId new value of article sound bird id
+	 * @throws \RangeException if $newArticleSoundBirdId is not positive
+	 * @throws \TypeError if $newArticleSoundBirdId is not an integer
 	 **/
-	public function setArticleContent($articleContent) {
-		$this->articleContent = $articleContent;
+	public function setArticleSoundBirdId( $newArticleSoundBirdId) : void {
+		try {
+				$uuid = self::validateUuid($newArticleSoundBirdId);
+			catch(\InvalidArgumentException | \RangeException | \Exception | \TypeError $exception) {
+				$exceptionType = get_class($exception);
+				throw(new $exceptionType($exception->getMessage(), 0, $exception));
+			}
+		}
+
+		// convert and store the profile id
+		$this->articleSoundBirdId = $uuid;
 	}
 
 	/**
-	 * @return mixed
 	 * accessor method for article content
+	 *
+	 * @return string value of article content
 	 **/
-	public function getArticleContent() {
+	public function getArticleContent() : string {
 		return ($this->articleContent);
 	}
+
+	/**
+	 * mutator method for article content
+	 *
+	 * @param string $newArticleContent new value of article content
+	 * @throws \InvalidArgumentException if $newArticleContent is not a string or insecure
+	 * @throws \RangeException if $newArticleContent is > 100 characters
+	 * @throws \TypeError if $newArticleContent is not a string
+	 **/
+	public function setArticleContent(string $newArticleContent) : void {
+		//verify the tweet content is secure
+		$newArticleContent = trim($newArticleContent);
+		$newArticleContent = filter_var($newArticleContent, FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
+		if(empty($newArticleContent) === true) {
+			throw(new \InvalidArgumentException("article content is empty or insecure"));
+		}
+
+		//verify the article content will fit in the database
+		if(strlen($newArticleContent) >=100) {
+			throw(new \RangeException("article content too large"));
+		}
+
+		$this->articleContent = $articleContent;
+	}
+
+
 
 	/**
 	 * @param $articleBirdImage
