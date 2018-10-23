@@ -108,7 +108,7 @@ class Bird {
 	public function setArticleBirdId($newArticleBirdId): void {
 		try {
 			$uuid = self::validateUuid($newArticleBirdId);
-		catch
+		} catch
 			(\InvalidArgumentException | \RangeException | \Exception | \TypeError $exception) {
 				$exceptionType = get_class($exception);
 				throw(new $exceptionType($exception->getMessage(), 0, $exception));
@@ -138,14 +138,12 @@ class Bird {
 	public function setArticleSoundBirdId($newArticleSoundBirdId): void {
 			try {
 				$uuid = self::validateUuid($newArticleSoundBirdId);
-			catch
+			} catch
 				(\InvalidArgumentException | \RangeException | \Exception | \TypeError $exception) {
 					$exceptionType = get_class($exception);
 					throw(new $exceptionType($exception->getMessage(), 0, $exception));
 				}
-		}
-
-		// convert and store the profile id
+		// convert and store the article sound bird id
 		$this->articleSoundBirdId = $uuid;
 	}
 
@@ -200,10 +198,10 @@ class Bird {
 	 * @throws \RangeException if $newArticleBirdImage is > 255 characters
 	 * @throws \TypeError if $newArticleBirdImage is not a string
 	 **/
-	public function setArticleBirdImage(string $articleBirdImage): void {
+	public function setArticleBirdImage(string $newArticleBirdImage): void {
 			// verify the article bird image is secure
 			$newArticleBirdImage = trim($newArticleBirdImage);
-			$newArticleBirdImage = filter_var(($newArticleBirdImage, FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES));
+			$newArticleBirdImage = filter_var($newArticleBirdImage, FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
 		if(empty($newArticleBirdImage) === true) {
 			throw(new \InvalidArgumentException("article bird image is empty or insecure"));
 		}
@@ -213,8 +211,6 @@ class Bird {
 	}
 
 
-
-}
 
 }
 
