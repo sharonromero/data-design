@@ -181,13 +181,22 @@ class Bird {
 		$query = "INSERT INTO article(articleId, articleBirdId, articleContent, articleBirdImage) VALUES(:articleId, :articleBirdId, :articleContent, :articleBirdImage)";
 
 		$statement = $pdo->prepare($query);
+
+		$statement->execute($query);
 	}
 
-**/
+	/**
+	 * updates this article in mySQL
+	 *
+	 * @param \PDO $pdo PDO connection object
+	 * @throws	\PDOException when mySQL related errors occur
+	 * @throws \TypeError if $pdo is not a PDO connection object
+	 **/
+
 	public function update(\PDO $pdo): void {
 
 		// create query template
-		$query = "UPDATE article SET articleBirdId = articleBirdId, articleContent = :articleContent, articleBirdImage WHERE articleId = :articleId";
+		$query = "UPDATE article SET articleBirdId = :articleBirdId, articleContent = :articleContent, articleBirdImage = :articleBirdImage WHERE articleId = :articleId";
 		$statement = $pdo->prepare($query);
 
 		$parameters = ["articleId" => $this->articleId->getBytes(), "articleBirdId" => $this->articleBirdId->getBytes(), "articleContent" => $this->articleContent, "articleBirdImage" = $this->articleBirdImage];
@@ -212,8 +221,17 @@ class Bird {
 		$statement->execute($parameters);
 	}
 
-	public static function getArticlebyArticleId(\PDO $pdo, $tweetId) : ?Article {
-		// sanitize the tweetId before searching
+	/**
+	 * gets the article by articleId
+	 *
+	 * @param \PDO $pdo PDO connection object
+	 * @param Uuid|string $articleId article id to search for
+	 * @return article|null article found or null if not found
+	 * @throws \PDOException when mySQL related errors occur
+	 * @throws \TypeError when a variable is not the correct data type
+	 **/
+	public static function getArticlebyArticleId(\PDO $pdo, $articleId) : ?Article {
+		// sanitize the articleId before searching
 		try {
 			$articleId = self::validateUuid($articleId);
 		} catch(\InvalidArgumentException | \RangeException | \Exception | \TypeError $exception) {
@@ -224,11 +242,11 @@ class Bird {
 		$query = "SELECT articleId, articleBirdId, articleContent, articleBirdImage FROM article WHERE articleId = :articleId";
 		$statement = $pdo->prepare($query);
 
-		// bind the tweet id to the place holder in the template
+		// bind the article id to the place holder in the template
 		$parameters = ["articleId" => $articleId->getBytes()];
-		$statement->execute($parameters);
+			$statement->execute($parameters);
 
-		// grab the tweet from mySQL
+		// grab the article from mySQL
 		try {
 			$article = null;
 			$statement->setFetchMode(\PDO::FETCH_ASSOC);
@@ -242,6 +260,8 @@ class Bird {
 		}
 		return($article);
 	}
+
+
 
 
 }
