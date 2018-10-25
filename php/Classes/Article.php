@@ -2,6 +2,7 @@
 namespace sharonromero\DataDesign;
 
 require_once(dirname(__DIR__, 2) . "/vendor/autoload.php");
+require_once("autoload.php");
 
 use Ramsey\Uuid\Uuid;
 
@@ -12,6 +13,7 @@ use Ramsey\Uuid\Uuid;
  * @version 1.0.0
  **/
 class Bird {
+	use ValidateUuid;
 	/**
 	 * id for this article; this is the primary key.
 	 * @var uuid $articleId
