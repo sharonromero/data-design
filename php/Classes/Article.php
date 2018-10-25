@@ -104,13 +104,13 @@ class Bird {
 		try {
 			$uuid = self::validateUuid($newArticleBirdId);
 		} catch
-			(\InvalidArgumentException | \RangeException | \Exception | \TypeError $exception) {
-				$exceptionType = get_class($exception);
-				throw(new $exceptionType($exception->getMessage(), 0, $exception));
-			}
+		(\InvalidArgumentException | \RangeException | \Exception | \TypeError $exception) {
+			$exceptionType = get_class($exception);
+			throw(new $exceptionType($exception->getMessage(), 0, $exception));
+		}
 
-			// convert and store the article bird id
-			$this->articleBirdId = $uuid;
+		// convert and store the article bird id
+		$this->articleBirdId = $uuid;
 	}
 
 	/**
@@ -119,8 +119,8 @@ class Bird {
 	 * @return string value of article content
 	 **/
 	public function getArticleContent(): string {
-			return ($this->articleContent);
-		}
+		return ($this->articleContent);
+	}
 
 	/**
 	 * mutator method for article content
@@ -131,30 +131,30 @@ class Bird {
 	 * @throws \TypeError if $newArticleContent is not a string
 	 **/
 	public function setArticleContent(string $newArticleContent): void {
-			//verify the tweet content is secure
-			$newArticleContent = trim($newArticleContent);
-			$newArticleContent = filter_var($newArticleContent, FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
-			if(empty($newArticleContent) === true) {
-				throw(new \InvalidArgumentException("article content is empty or insecure"));
-			}
-
-			//verify the article content will fit in the database
-			if(strlen($newArticleContent) >= 100) {
-				throw(new \RangeException("article content too large"));
-			}
-
-			// store the article content
-			$this->articleContent = $newArticleContent;
+		//verify the tweet content is secure
+		$newArticleContent = trim($newArticleContent);
+		$newArticleContent = filter_var($newArticleContent, FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
+		if(empty($newArticleContent) === true) {
+			throw(new \InvalidArgumentException("article content is empty or insecure"));
 		}
 
-/**
- * accessor method for article bird image
- *
- * @return string value of article bird image
- **/
+		//verify the article content will fit in the database
+		if(strlen($newArticleContent) >= 100) {
+			throw(new \RangeException("article content too large"));
+		}
+
+		// store the article content
+		$this->articleContent = $newArticleContent;
+	}
+
+	/**
+	 * accessor method for article bird image
+	 *
+	 * @return string value of article bird image
+	 **/
 	public function getArticleBirdImage(): string {
-			return ($this->articleBirdImage);
-		}
+		return ($this->articleBirdImage);
+	}
 
 	/**
 	 * mutator method for article bird image
@@ -165,9 +165,9 @@ class Bird {
 	 * @throws \TypeError if $newArticleBirdImage is not a string
 	 **/
 	public function setArticleBirdImage(string $newArticleBirdImage): void {
-			// verify the article bird image is secure
-			$newArticleBirdImage = trim($newArticleBirdImage);
-			$newArticleBirdImage = filter_var($newArticleBirdImage, FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
+		// verify the article bird image is secure
+		$newArticleBirdImage = trim($newArticleBirdImage);
+		$newArticleBirdImage = filter_var($newArticleBirdImage, FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
 		if(empty($newArticleBirdImage) === true) {
 			throw(new \InvalidArgumentException("article bird image is empty or insecure"));
 		}
@@ -175,6 +175,78 @@ class Bird {
 		// store the article bird image
 		$this->articleBirdImage = $newArticleBirdImage;
 	}
+
+	public function insert(\PDO $pdo): void {
+
+		$query = "INSERT INTO article(articleId, articleBirdId, articleContent, articleBirdImage) VALUES(:articleId, :articleBirdId, :articleContent, :articleBirdImage)";
+
+		$statement = $pdo->prepare($query);
+	}
+
+**/
+	public function update(\PDO $pdo): void {
+
+		// create query template
+		$query = "UPDATE article SET articleBirdId = articleBirdId, articleContent = :articleContent, articleBirdImage WHERE articleId = :articleId";
+		$statement = $pdo->prepare($query);
+
+		$parameters = ["articleId" => $this->articleId->getBytes(), "articleBirdId" => $this->articleBirdId->getBytes(), "articleContent" => $this->articleContent, "articleBirdImage" = $this->articleBirdImage];
+		$statement->execute($parameters);
+	}
+
+	/**
+	 * deletes this article from mySQL
+	 *
+	 * @param \PDO $pdo PDO connection object
+	 * @throws \PDOException when mySQL related errors occur
+	 * @throws \TypeError if $pdo is not a PDO connection object
+	 **/
+	public function delete(\PDO $pdo): void {
+
+		// create query template
+		$query = "DELETE FROM article WHERE articleId = :articleId";
+		$statement = $pdo->prepare($query);
+
+		// bind the member variables to the place holder in the template
+		$parameters = ["articleId" => $this->articleId->getBytes()];
+		$statement->execute($parameters);
+	}
+
+	public static function getArticlebyArticleId(\PDO $pdo, $tweetId) : ?Article {
+		// sanitize the tweetId before searching
+		try {
+			$articleId = self::validateUuid($articleId);
+		} catch(\InvalidArgumentException | \RangeException | \Exception | \TypeError $exception) {
+			throw(new \PDOException($exception->getMessage(), 0, $exception));
+		}
+
+		// create query template
+		$query = "SELECT articleId, articleBirdId, articleContent, articleBirdImage FROM article WHERE articleId = :articleId";
+		$statement = $pdo->prepare($query);
+
+		// bind the tweet id to the place holder in the template
+		$parameters = ["articleId" => $articleId->getBytes()];
+		$statement->execute($parameters);
+
+		// grab the tweet from mySQL
+		try {
+			$article = null;
+			$statement->setFetchMode(\PDO::FETCH_ASSOC);
+			$row = $statement->fetch();
+			if($row !== false) {
+				$article = new Article($row["articleId"], $row["articleBirdId"], $row["articleContent"], $row["articleBirdImage"]);
+			}
+		} catch(\Exception $exception) {
+			// if the row couldn't be converted, rethrow it
+			throw(new \PDOException($exception->getMessage(), 0, $exception));
+		}
+		return($article);
+	}
+
+
 }
+
+
+
 
 ?>
