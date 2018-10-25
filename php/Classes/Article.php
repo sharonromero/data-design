@@ -23,11 +23,6 @@ class Bird {
 	 **/
 	private $articleBirdId;
 	/**
-	 * id of the sound file that is played for the bird discussed in the article; this is a foreign key.
-	 * @var uuid $articleSoundBirdId
-	 **/
-	private $articleSoundBirdId;
-	/**
 	 * actual textual content of the article
 	 * @var string $articleContent
 	 **/
@@ -42,15 +37,13 @@ class Bird {
 	 * constructor for bird class
 	 * @param uuid $newArticleId id of this article or null if new article
 	 * @param uuid $newArticleBirdId id of the bird that is being discussed in the article
-	 * @param uuid $newArticleSoundBirdId if of the sound file of the bird discussed in the article
 	 * @param string $newArticleContent string containing actual article data
 	 * @param string $newArticleBirdImage string containing the name or url of the image of the bird discussed in the article
 	 **/
-	public function __construct($newArticleId, $newArticleBirdId, $newArticleSoundBirdId, string $newArticleContent, string $newArticleBirdImage) {
+	public function __construct($newArticleId, $newArticleBirdId, string $newArticleContent, string $newArticleBirdImage) {
 		try {
 			$this->setArticleId($newArticleId);
 			$this->setArticleBirdId($newArticleBirdId);
-			$this->setArticleSoundBirdId($newArticleSoundBirdId);
 			$this->setArticleContent($newArticleContent);
 			$this->setArticleBirdImage($newArticleBirdImage);
 		} //determine what exception was thrown
@@ -119,35 +112,6 @@ class Bird {
 	}
 
 	/**
-	 * accessor method for article sound bird id
-	 *
-	 * @return uuid value for article sound bird id
-	 **/
-	public function getArticleSoundBirdId(): uuid {
-			return ($this->articleSoundBirdId);
-		}
-
-
-	/**
-	 * mutator method for article sound bird id
-	 *
-	 * @param string | Uuid $newArticleSoundBirdId new value of article sound bird id
-	 * @throws \RangeException if $newArticleSoundBirdId is not positive
-	 * @throws \TypeError if $newArticleSoundBirdId is not an integer
-	 **/
-	public function setArticleSoundBirdId($newArticleSoundBirdId): void {
-			try {
-				$uuid = self::validateUuid($newArticleSoundBirdId);
-			} catch
-				(\InvalidArgumentException | \RangeException | \Exception | \TypeError $exception) {
-					$exceptionType = get_class($exception);
-					throw(new $exceptionType($exception->getMessage(), 0, $exception));
-				}
-		// convert and store the article sound bird id
-		$this->articleSoundBirdId = $uuid;
-	}
-
-	/**
 	 * accessor method for article content
 	 *
 	 * @return string value of article content
@@ -209,9 +173,6 @@ class Bird {
 		// store the article bird image
 		$this->articleBirdImage = $newArticleBirdImage;
 	}
-
-
-
 }
 
 ?>

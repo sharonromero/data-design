@@ -29,13 +29,10 @@ PRIMARY KEY(soundId)
 CREATE TABLE article(
 articleId BINARY(16) NOT NULL,
 articleBirdId BINARY(16) NOT NULL,
-articleSoundBirdId BINARY(16) NOT NULL,
 articleContent VARCHAR(100) NOT NULL,
 articleBirdImage VARCHAR(255) NOT NULL,
 
 INDEX(articleBirdId),
 FOREIGN KEY(articleBirdId) REFERENCES bird(birdId),
-INDEX(articleSoundBirdId),
-FOREIGN KEY(articleSoundBirdId) REFERENCES sound(soundBirdId),
 PRIMARY KEY(articleId)
 );
