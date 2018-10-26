@@ -34,7 +34,6 @@ class Bird {
 	 * @var string $articleBirdImage
 	 **/
 	private $articleBirdImage;
-
 	/**
 	 * constructor for bird class
 	 * @param uuid $newArticleId id of this article or null if new article
@@ -82,8 +81,6 @@ class Bird {
 		//convert and store the article id
 		$this->articleId = $uuid;
 	}
-
-
 	/**
 	 * accessor method for article bird id
 	 *
@@ -92,7 +89,6 @@ class Bird {
 	public function getArticleBirdId(): uuid {
 		return ($this->articleBirdId);
 	}
-
 	/**
 	 * mutator method for article bird id
 	 *
@@ -108,11 +104,9 @@ class Bird {
 			$exceptionType = get_class($exception);
 			throw(new $exceptionType($exception->getMessage(), 0, $exception));
 		}
-
 		// convert and store the article bird id
 		$this->articleBirdId = $uuid;
 	}
-
 	/**
 	 * accessor method for article content
 	 *
@@ -121,7 +115,6 @@ class Bird {
 	public function getArticleContent(): string {
 		return ($this->articleContent);
 	}
-
 	/**
 	 * mutator method for article content
 	 *
@@ -131,7 +124,7 @@ class Bird {
 	 * @throws \TypeError if $newArticleContent is not a string
 	 **/
 	public function setArticleContent(string $newArticleContent): void {
-		//verify the tweet content is secure
+		//verify the article content is secure
 		$newArticleContent = trim($newArticleContent);
 		$newArticleContent = filter_var($newArticleContent, FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
 		if(empty($newArticleContent) === true) {
@@ -176,6 +169,13 @@ class Bird {
 		$this->articleBirdImage = $newArticleBirdImage;
 	}
 
+	/**
+	 * inserts this article into mySQL
+	 *
+	 * @param \PDO $pdo PDO connection object
+	 * @throws \PDOException when mySQL related errors occur
+	 * @throws \TypeError if $pdo is not a PDO connection object
+	 **/
 	public function insert(\PDO $pdo): void {
 
 		$query = "INSERT INTO article(articleId, articleBirdId, articleContent, articleBirdImage) VALUES(:articleId, :articleBirdId, :articleContent, :articleBirdImage)";
@@ -192,14 +192,13 @@ class Bird {
 	 * @throws	\PDOException when mySQL related errors occur
 	 * @throws \TypeError if $pdo is not a PDO connection object
 	 **/
-
 	public function update(\PDO $pdo): void {
 
 		// create query template
 		$query = "UPDATE article SET articleBirdId = :articleBirdId, articleContent = :articleContent, articleBirdImage = :articleBirdImage WHERE articleId = :articleId";
 		$statement = $pdo->prepare($query);
 
-		$parameters = ["articleId" => $this->articleId->getBytes(), "articleBirdId" => $this->articleBirdId->getBytes(), "articleContent" => $this->articleContent, "articleBirdImage" = $this->articleBirdImage];
+		$parameters = ["articleId" => $this->articleId->getBytes(), "articleBirdId" => $this->articleBirdId->getBytes(), "articleContent" => $this->articleContent, "articleBirdImage" => $this->articleBirdImage];
 		$statement->execute($parameters);
 	}
 
@@ -230,7 +229,7 @@ class Bird {
 	 * @throws \PDOException when mySQL related errors occur
 	 * @throws \TypeError when a variable is not the correct data type
 	 **/
-	public static function getArticlebyArticleId(\PDO $pdo, $articleId) : ?Article {
+	public static function getArticleByArticleId(\PDO $pdo, $articleId) : ?Article {
 		// sanitize the articleId before searching
 		try {
 			$articleId = self::validateUuid($articleId);
@@ -261,12 +260,47 @@ class Bird {
 		return($article);
 	}
 
+	/**
+	 * gets all Articles
+	 *
+	 * @param \PDO $pdo PDO connection object
+	 * @return \SplFixedArray SplFixedArray of Articles found or null if not found
+	 * @throws \PDOException when mySQL related errors occur
+	 * @throws \TypeError when variables are not the correct data type
+	 **/
+	public static function getAllArticles(\PDO $pdo) : \SPLFixedArray {
+		// create query template
+		$query = "SELECT articleId, articleBirdId, articleContent, articleBirdImage FROM article";
+		$statement = $pdo->prepare($query);
+		$statement->execute();
 
+		// build an array of articles
+		$articles = new \SplFixedArray($statement->rowCount());
+		$statement->setFetchMode(\PDO::FETCH_ASSOC);
+		while(($row = $statement->fetch()) !== false) {
+			try {
+				$article = new Article($row["articleId"], $row["articleBirdId"], $row["articleContent"], $row["articleBirdImage"]);
+				$articles[$articles->key()] = $article;
+				$articles->next();
+			} catch(\Exception $exception) {
+				// if the row couldn't be converted, rethrow it
+				throw(new \PDOException($exception->getMessage(), 0, $exception));
+				}
+			}
+		return ($articles);
+	}
 
+	/**
+	 * formats the state variables for JSON serialization
+	 *
+	 * @return array resulting state variables to serialize
+	 **/
+	public function jsonSerialize() : array {
+		$fields = get_object_vars($this);
 
+		$fields["articleId"] = $this->articleId->toString();
+		$fields["articleBirdId"] = $this->articleBirdId->toString();
+
+		return($fields);
+	}
 }
-
-
-
-
-?>
